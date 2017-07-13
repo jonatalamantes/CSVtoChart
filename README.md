@@ -1,2 +1,2 @@
 # CSVtoChart
-CSVtoChart
+CSV to Chart

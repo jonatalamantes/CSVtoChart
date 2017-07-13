@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Mobilario CJM">
+        <meta name="author" content="Jesxtra">
+        <meta http-equiv="Cache-Control" content="no-cache">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+
+        <script type="text/javascript" src="../Third-Party/JQueryUI/JQuery.js"></script>
+        <script type="text/javascript" src="../Third-Party/JQueryUI/jquery-ui.js"></script>
+        <script type="text/javascript" src="../Third-Party/Bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../Third-Party/JQueryTableSorted/jquery.tablesorter.min.js"></script>
+        <script type="text/javascript" src="../Third-Party/D3/d3.js"></script>
+
+        <script type="text/javascript" src="JS/inputFunctions.js"></script>
+        <script type="text/javascript" src="JS/functions.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="../Third-Party/Bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../Third-Party/Bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../Third-Party/JQueryUI/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="CSS/general.css">
+
+
+        <title>|title|</title>
+    </head>
+    <body role="document">
+         <div class="container theme-showcase" role="main">
+         	<br>
+            <div class="jumbotron">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Calcular Estadística</h3>
+                    </div>
+                    <div class="panel-body" id='panel-body'>
+                        <div class="container">
+                            <div id="no-more-tables2">
+                                <table class="table table-condensed cf" id="table1">
+                                    <tbody style="margin-left: 20px; background-color: transparent; text-align: center;">
+                                        <tr style="display:none;">
+                                            <td id="nombreArchivo" disabled>|archivo|</td>
+                                            <td id="archivoSubido" disabled>0</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center" colspan="2">
+                                                <div id='form_subir'>
+                                                    <form  onsubmit='subirAdjunto(this, event)' enctype='multipart/form-data' id='formuploadajax' method='POST' style='display: inline-block; margin-top: 10px'>
+                                                        <input type='hidden' name='MAX_FILE_SIZE' value='5000000000'>
+                                                        <input name='fichero_usuario' type='file' style='float:left;'>
+                                                        <input type='submit' value='Subir Archivo' class='btn btn-danger' style='float:left; margin-left: 10px'>
+                                                    </form>
+                                                    <p id="mensajeSubida" style="display: none">Archivo subido con Exito <img src="Img/check.png" width="20px" style="margin-top: -10px"></p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                        	<td>
+                                        		<input type="checkbox" name="percent" id='percent'>Usar Porcentaje
+                                        	</td>
+                                        </tr>
+                                        <tr>
+                                        	<td>
+                                        		<button id="btnCalcular" onclick='staticCalculation()' class='btn btn-danger'>Calcular</button>
+                                        	</td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="attrs">
+                        </div>
+                        <div id="static">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </body>
+</html>
