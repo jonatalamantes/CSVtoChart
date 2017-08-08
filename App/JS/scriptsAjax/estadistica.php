@@ -18,7 +18,7 @@
 	    	echo "<br>";
 	    	foreach ($tablesFrecuence as $key => $tf) 
 	    	{
-	    		echo DataCSV::FrecuenceTableToD3Chart($tf, 'key');
+	    		echo DataCSV::FrecuenceTableToD3Chart($tf, 'id');
 	    		echo DataCSV::FrecuenceTableToHTML($tf);
 	    		echo "<br>";
 	    	}

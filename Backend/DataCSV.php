@@ -1,9 +1,6 @@
 <?php 
 
 	ini_set("auto_detect_line_endings", true);
-	ini_set("upload_max_filesize", "7G");
-	ini_set("memory_limit", "64G");
-	ini_set("post_max_size", "8G");
 
     require_once(__DIR__."/../Third-Party/jpgraph/src/jpgraph.php");
     require_once(__DIR__."/../Third-Party/jpgraph/src/jpgraph_pie.php");
@@ -103,17 +100,20 @@
 
 				$statics = array();
 
+                $id = 1;
 				foreach ($keysArray as $key => $value) 
 				{
 					if ($porcentaje === "true")
 					{
-						$val = number_format($countArray[$key]/$total*100, 3);
-						$statics[] = array("key" => $keysArray[$key], "value" => $val);
+						$val = strval(number_format($countArray[$key]/$total*100, 3)) . "%";
+						$statics[] = array("key" => $keysArray[$key], "value" => $val, "id" => $id);
 					}
 					else
 					{
-						$statics[] = array("key" => $keysArray[$key], "value" => $countArray[$key]);
+						$statics[] = array("key" => $keysArray[$key], "value" => $countArray[$key], "id" => $id);
 					}
+
+                    $id++;
 				}
 
 				$nodeFrecuence = array();
@@ -147,12 +147,13 @@
 			$strRtr .= "<table class='ft table tablesorter table-bordered' id='$id'>";
 			$strRtr .= "<thead>";
 			$strRtr .= "<tr>";
-			$strRtr .= "<td colspan=2 class='tf-header'>";
+			$strRtr .= "<td colspan=3 class='tf-header'>";
 			$strRtr .= $tf["atribute"];
 			$strRtr .= "</td>";
 			$strRtr .= "</tr>";
 			$strRtr .= "<tr>";
-			$strRtr .= "<th class='tf-attr-header'>Valor</th>";
+            $strRtr .= "<th class='tf-attr-header'>No.</th>";
+            $strRtr .= "<th class='tf-attr-header'>Valor</th>";
 			$strRtr .= "<th class='tf-attr-header'>Cantidad</th>";
 			$strRtr .= "</tr>";
 			$strRtr .= "</thead>";
@@ -165,9 +166,12 @@
 				$strRtr .= "<tr>";
 				$sum += $static["value"];
 				$strRtr .= "<td>";
-				$strRtr .= $static["key"];
-				$strRtr .= "</td>";
-				$strRtr .= "<td>";
+                $strRtr .= $static["id"];
+                $strRtr .= "</td>";
+                $strRtr .= "<td>";
+                $strRtr .= strtoupper($static["key"]);
+                $strRtr .= "</td>";
+                $strRtr .= "<td>";
 				$strRtr .= $static["value"];
 				$strRtr .= "</td>";
 				$strRtr .= "</tr>";
@@ -329,11 +333,12 @@
 			if ($nameFile !== "NF")
 			{
                 $keys   = array();
+                $keys2  = array();
                 $values = array();
 
                 foreach ($tf["statics"] as $key => $value) 
                 {
-                    $keys[]   = $value["key"] . ": " . $value["value"];;
+                    $keys[]   = strtoupper($value["key"]) . " => " . $value["value"] . "\n";
                     $values[] = $value["value"];
                 }
 
@@ -348,12 +353,16 @@
                 // Adjust size and position of plot
                 $p1->SetSize(0.3);
                 $p1->SetCenter(0.1,-0.52);
-                 
-                // Setup slice labels and move them into the plot
-                $p1->value->SetFont(FF_FONT2,FS_BOLD);
+                
+                // Enable and set policy for guide-lines
+                $p1->SetGuideLines();
+                //$p1->SetGuideLinesAdjust(0);
+
+                // Setup slice labels and moe them into the plot
+                $p1->value->SetFont(FF_FONT2);
                 $p1->value->SetColor("black");
                 $p1->SetLabelType(PIE_VALUE_ABS);
-                $p1->SetLabels($keys, 1); 
+                $p1->SetLabels($keys, 1.0); 
                 $p1->value->Show(); 
                  
                 // Finally add the plot
@@ -388,14 +397,16 @@
                 $keys   = array();
                 $values = array();
 
+                $ct = 1;
                 foreach ($tf["statics"] as $key => $value) 
                 {
-                    $keys[]   = $value["key"];
+                    $keys[]   = $value["id"];
                     $values[] = $value["value"];
+                    $ct++;
                 }
 
                 // A new pie graph
-                $graph = new Graph(960,600);
+                $graph = new Graph(960,600, 'auto');
                 $graph->SetShadow();
 				$graph->SetScale('textlin');
 				$graph->graph_theme = null;
@@ -408,7 +419,7 @@
                 $p1->SetFillColor("green");
                 $p1->value->Show();
                 $p1->value->SetColor("black");
-                $p1->value->SetFont( FF_FONT1, FS_BOLD);
+                $p1->value->SetFont(FF_FONT1, FS_BOLD);
                 $p1->value->SetFormat( "%0.1f");
 
                 // Finally add the plot

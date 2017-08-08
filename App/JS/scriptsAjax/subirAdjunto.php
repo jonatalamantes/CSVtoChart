@@ -43,7 +43,7 @@
         }
         else
         {
-            echo "1";
+            echo "1|" . $_FILES["fichero_usuario"]["error"] . "|";
         }
     }
     else
