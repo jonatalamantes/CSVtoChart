@@ -38,6 +38,25 @@
 			$this->instances = $inst;
 		}
 
+        static function title($x = "")
+        {
+            $title = "";
+
+            for ($i = 0; $i < strlen($x); $i++)
+            {
+                if ($x[$i] == strtoupper($x[$i]))
+                {
+                    $title .= " " . strtoupper($x[$i]);
+                }
+                else
+                {
+                    $title .= strtoupper($x[$i]);
+                }
+            }
+
+            return $title;
+        }
+
 		function getValue($instanceKey = 0, $dataKey = 0)
 		{
 			if (isset($this->instances[$instanceKey][$dataKey]))
@@ -105,7 +124,7 @@
 				{
 					if ($porcentaje === "true")
 					{
-						$val = strval(number_format($countArray[$key]/$total*100, 3)) . "%";
+						$val = strval(number_format($countArray[$key]/$total*100, 3));
 						$statics[] = array("key" => $keysArray[$key], "value" => $val, "id" => $id);
 					}
 					else
@@ -148,7 +167,7 @@
 			$strRtr .= "<thead>";
 			$strRtr .= "<tr>";
 			$strRtr .= "<td colspan=3 class='tf-header'>";
-			$strRtr .= $tf["atribute"];
+			$strRtr .= self::title($tf["atribute"]);
 			$strRtr .= "</td>";
 			$strRtr .= "</tr>";
 			$strRtr .= "<tr>";
@@ -188,7 +207,7 @@
 	    	return $strRtr;
 		}
 
-		static function FrecuenceTableToFileCSV($tf, $nameR = "", $maxInstances = -1)
+		static function FrecuenceTableToFileCSV($tf, $nameR = "", $maxInstances = 20)
 		{
 			if ($tf == NULL || empty($tf))
 			{
@@ -345,7 +364,7 @@
                 // A new pie graph
                 $graph = new PieGraph(960,600);
                 $graph->SetShadow();
-                $graph->title->Set($tf["atribute"]);
+                $graph->title->Set(self::title($tf["atribute"]));             
                               
                 // Setup the pie plot
                 $p1 = new PiePlot($values);
@@ -400,6 +419,11 @@
                 $ct = 1;
                 foreach ($tf["statics"] as $key => $value) 
                 {
+                    if ($ct == 20)
+                    {
+                        break;
+                    }
+
                     $keys[]   = $value["id"];
                     $values[] = $value["value"];
                     $ct++;
@@ -412,7 +436,7 @@
 				$graph->graph_theme = null;
 				$graph->SetFrame(false);
                 $graph->xaxis->SetTickLabels($keys); 
-                $graph->title->Set($tf["atribute"]);				
+                $graph->title->Set(self::title($tf["atribute"]));				
 
                 // Setup the pie plot
                 $p1 = new BarPlot($values);
@@ -421,6 +445,8 @@
                 $p1->value->SetColor("black");
                 $p1->value->SetFont(FF_FONT1, FS_BOLD);
                 $p1->value->SetFormat( "%0.1f");
+
+                var_dump($values);
 
                 // Finally add the plot
                 $graph->Add($p1);                 
@@ -448,7 +474,7 @@
         * @param  string        subkey name
         * @param  typeSort      constant of the type of sort
         */
-        static function sortBySubkey(&$array = null, $subkey = "", $sortType = SORT_ASC) 
+        static function sortBySubkey(&$array = null, $subkey = "", $sortType = SORT_DESC) 
         {
             if ($array !== NULL)
             {
