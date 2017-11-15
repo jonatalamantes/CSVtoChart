@@ -31,7 +31,7 @@ function subirAdjunto(obj, evento)
             var pieces = res.split("|");
             for (var i = 0; i < pieces.length; i++)
             {
-                string += "<input type='checkbox' id='" + pieces[i] + "' class='attribs'>" + pieces[i];
+                string += "<input type='checkbox' id='" + pieces[i] + "' class='attribs'>" + pieces[i] + "<br>";
             }
 
             $("#attrs").html(string);

@@ -12,6 +12,8 @@
 
 	    if ($csv->fromFile($miFile) < 0)
 	    {
+	    	//$csv->divideDataByAttr("municipio");
+
 	    	$tg = explode("|", $_POST["targets"]);
 	    	$tablesFrecuence = $csv->getFrecuencesTable($tg, $_POST["porcentaje"]);
 

@@ -57,6 +57,11 @@
             return $title;
         }
 
+        function addInstance($inst)
+        {
+            $this->instances[] = $inst;
+        }
+
 		function getValue($instanceKey = 0, $dataKey = 0)
 		{
 			if (isset($this->instances[$instanceKey][$dataKey]))
@@ -80,6 +85,43 @@
 				return "";
 			}
 		}
+
+        function divideDataByAttr($attrR)
+        {
+            $keysArray = array();
+            $dataCSVs  = array();
+
+            foreach ($this->instances as $instkey => $inst) 
+            {
+                $pos = array_search($inst[$attrR], $keysArray);
+
+                if ($pos === FALSE)
+                {
+                    $tempDataCSV = new DataCSV();
+                    $tempDataCSV->setAtributes($this->getAtributes());
+
+                    $tempDataCSV->addInstance($inst);
+                    $dataCSVs[] = $tempDataCSV;
+
+                    $keysArray[] = $inst[$attrR];
+                }
+                else
+                {
+                    $dataCSVs[$pos]->addInstance($inst);
+                }
+            }
+
+            var_dump($keysArray);
+
+            $baseName = date("YmdHis");
+            foreach ($dataCSVs as $key2 => $csvd) 
+            {
+                $name = $csvd->getInstances()[0][$attrR];
+                $csvd->toFile(__DIR__."/../../CSVtoChart/App/Splits/$baseName-$name.csv");
+            }
+
+            return $dataCSVs;
+        }
 
 		function getFrecuencesTable($targets = NULL, $porcentaje = false)
 		{
@@ -125,11 +167,48 @@
 					if ($porcentaje === "true")
 					{
 						$val = strval(number_format($countArray[$key]/$total*100, 3));
-						$statics[] = array("key" => $keysArray[$key], "value" => $val, "id" => $id);
+
+                        $vals = explode(",", $keysArray[$key]);
+                        $nv   = array();
+
+                        foreach ($vals as $key2 => $value2) 
+                        {
+                            if (trim($value2) != "")
+                            {
+                                //$nv[] = substr($value2, 0,3);
+                                $nv[] = trim($value2);
+                            }
+                        }
+
+                        $nv = implode(",", $nv);
+                        var_dump($nv);
+
+						$statics[] = array("key" => $nv, "value" => $val, "id" => $id);
 					}
 					else
 					{
-						$statics[] = array("key" => $keysArray[$key], "value" => $countArray[$key], "id" => $id);
+                        $vals = explode(",", $keysArray[$key]);
+                        $nv   = array();
+
+                        foreach ($vals as $key2 => $value2) 
+                        {
+                            if (trim($value2) != "")
+                            {
+                                //$nv[] = substr($value2, 0,3);
+                                $nv[] = trim($value2);
+                            }
+                        }
+
+                        $nv = implode(" - ", $nv);
+
+                        if (trim($nv) == "")
+                        {
+                            $nv = "sin especificar";
+                        }
+
+                        var_dump($nv);
+
+						$statics[] = array("key" => $nv, "value" => $countArray[$key], "id" => $id);
 					}
 
                     $id++;
@@ -323,7 +402,7 @@
 				return "";
 			}
 
-			if (sizeof($tf["statics"]) > 10 || $tipo == "bar")
+			if (sizeof($tf["statics"]) > 1000 || $tipo == "bar")
 			{
 				if ($sort !== "")
 				{
@@ -336,6 +415,13 @@
 			}
 			else
 			{
+                if ($sort !== "")
+                {
+                    $tfTemp = $tf;
+                    DataCSV::sortBySubkey($tfTemp["statics"], $sort);                   
+                    return DataCSV::FrecuenceTableToD3PieChart($tf, $name);
+                }
+
 				return DataCSV::FrecuenceTableToD3PieChart($tf, $name);
 			}
 		}
@@ -355,14 +441,21 @@
                 $keys2  = array();
                 $values = array();
 
+                $ct = 1;
                 foreach ($tf["statics"] as $key => $value) 
                 {
+                    if ($ct == 20)
+                    {
+                        break;
+                    }
+
                     $keys[]   = strtoupper($value["key"]) . " => " . $value["value"] . "\n";
                     $values[] = $value["value"];
+                    $ct++;                    
                 }
 
                 // A new pie graph
-                $graph = new PieGraph(960,600);
+                $graph = new PieGraph(1000,600);
                 $graph->SetShadow();
                 $graph->title->Set(self::title($tf["atribute"]));             
                               
@@ -430,7 +523,7 @@
                 }
 
                 // A new pie graph
-                $graph = new Graph(960,600, 'auto');
+                $graph = new Graph(1000,600, 'auto');
                 $graph->SetShadow();
 				$graph->SetScale('textlin');
 				$graph->graph_theme = null;
@@ -551,7 +644,30 @@
 
 		function toFile($fileURL)
 		{
-			//TODO
+            $str = "";
+
+			foreach ($this->getAtributes() as $attr)
+            {
+                    $str .= "\"" . $attr . "\",";       
+            }
+
+            $str = substr($str, 0, sizeof($str)-2);
+            $str .= "\r\n";
+
+            foreach ($this->getInstances() as $key => $inst) 
+            {
+                foreach ($inst as $key => $node) 
+                {
+                    $str .= "\"" . $node . "\",";       
+                }
+
+                $str = substr($str, 0, sizeof($str)-2);
+                $str .= "\r\n";
+            }
+
+            $f = fopen($fileURL, "w+");
+            fwrite($f, $str);
+            fclose($f);
 		}
 	}
 
