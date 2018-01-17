@@ -87,3 +87,34 @@ function staticCalculation()
         $("#btnCalcular").attr("disabled", false);
     });    
 }
+
+function staticExport()
+{
+    $("#btnExportar").attr("disabled", true);
+
+    var targets = "";
+    var auxTar  = $(".attribs:checked");
+
+    for (var i = 0; i < auxTar.length; i++)
+    {
+        targets += auxTar[i].id + "|";
+    }
+
+    console.log(targets);
+    targets = targets.substr(0, targets.length-1);
+
+    var percent = "false";
+    if ($("#percent:checked").length != 0)
+    {
+        percent = "true";
+    }
+
+    var page = "exportar.php";
+    page += "?nombreArchivo=" + $("#nombreArchivo").html();
+    page += "&porcentaje=" + percent
+    page += "&targets=" + targets;
+
+    $("#btnExportar").attr("disabled", false);
+    window.open(page, "_blank");
+
+}

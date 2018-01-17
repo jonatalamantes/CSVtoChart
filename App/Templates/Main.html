@@ -24,7 +24,6 @@
         <link rel="stylesheet" type="text/css" href="../Third-Party/JQueryUI/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="CSS/general.css">
 
-
         <title>|title|</title>
     </head>
     <body role="document">
@@ -57,14 +56,17 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                        	<td>
+                                        	<td colspan="2">
                                         		<input type="checkbox" name="percent" id='percent'>Usar Porcentaje
                                         	</td>
                                         </tr>
                                         <tr>
-                                        	<td>
-                                        		<button id="btnCalcular" onclick='staticCalculation()' class='btn btn-danger'>Calcular</button>
-                                        	</td> 
+                                            <td>
+                                                <button id="btnCalcular" onclick='staticCalculation()' class='btn btn-danger'>Calcular</button>
+                                            </td> 
+                                            <td>
+                                                <button id="btnExportar" onclick='staticExport()' class='btn btn-danger'>Export</button>
+                                            </td> 
                                         </tr>
                                     </tbody>
                                 </table>
